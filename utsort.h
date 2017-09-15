@@ -16,7 +16,7 @@ public:
     IncreasingByDistanceToN(int i):n(i){}
     int n;
     bool operator() (int i, int j){
-        return abs(i - n) < abs(j - n);
+        return std::abs(i - n) < std::abs(j - n);
     }
 };
 
@@ -27,7 +27,7 @@ public:
     DecreasingByDistanceToN(Type i):n(i){}
     Type n;
     bool operator() (Type i, Type j){
-        return abs(i - n) > abs(j - n);
+        return std::abs(i - n) > std::abs(j - n);
     }
 };
 
