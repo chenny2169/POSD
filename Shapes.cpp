@@ -77,50 +77,49 @@ void sortByDecreasingPerimeter(std::vector<Shape *> & shapes) {
     }
 }
 
+std::list<Shape*>::iterator getElement(std::list<Shape *> * shapeList , int position){
+    std::list<Shape*>::iterator it = (*shapeList).begin();
+    for(int i = 0;i < position;i++)
+        ++it;
+    return it;
+}
+
 void increasingPerimeterSort(std::list<Shape *> * shapeList) {
-    double maxPerimeter = 0;
-    int ifCount = 0;
-    for(std::list<Shape*>::iterator it = (*shapeList).begin(); it != (*shapeList).end(); it++){
-        if(((*it) -> perimeter()) > maxPerimeter){
-            maxPerimeter = (*it) -> perimeter();
-            (*shapeList).push_back(*it);
-            ifCount++;
-//            (*shapeList).pop_front();
+    for(int i = (*shapeList).size() - 1;i > 0;--i){
+        for(int j = 0;j < i;++j){
+            if((*getElement(shapeList, j)) -> perimeter() > (*getElement(shapeList, j + 1)) -> perimeter()){
+                Shape* temp = *getElement(shapeList, j);
+                *getElement(shapeList, j) = *getElement(shapeList, j + 1);
+                *getElement(shapeList, j + 1) = temp;
+            }
         }
-    }
-    for(int i = 0; i < ifCount; i++){
-        (*shapeList).pop_front();
+
     }
 }
 
 void increasingAreaSort(std::list<Shape *> * shapeList) {
-    double maxArea = 0;
-    int ifCount = 0;
-    for(std::list<Shape*>::iterator it = (*shapeList).begin(); it != (*shapeList).end(); it++){
-        if(((*it) -> area()) > maxArea){
-            maxArea = (*it) -> area();
-            (*shapeList).push_back(*it);
-            ifCount++;
-//            (*shapeList).pop_front();
+    for(int i = (*shapeList).size() - 1;i > 0;--i){
+        for(int j = 0;j < i;++j){
+            if((*getElement(shapeList, j)) -> area() > (*getElement(shapeList, j + 1)) -> area()){
+                Shape* temp = *getElement(shapeList, j);
+                *getElement(shapeList, j) = *getElement(shapeList, j + 1);
+                *getElement(shapeList, j + 1) = temp;
+            }
         }
-    }
-    for(int i = 0; i < ifCount; i++){
-        (*shapeList).pop_front();
+
     }
 }
 
 void increasingCompactnessSort(std::list<Shape *> * shapeList) {
-    double maxCompactness = 0;
-    int ifCount = 0;
-    for(std::list<Shape*>::iterator it = (*shapeList).begin(); it != (*shapeList).end(); it++){
-        if((((*it) -> area()) / ((*it) -> perimeter())) > maxCompactness){
-            maxCompactness = ((*it) -> area()) / ((*it) -> perimeter());
-            (*shapeList).push_back(*it);
-            ifCount++;
-//            (*shapeList).pop_front();
+   for(int i = (*shapeList).size() - 1;i > 0;--i){
+        for(int j = 0;j < i;++j){
+            if((((*getElement(shapeList, j)) -> area()) / ((*getElement(shapeList, j)) -> perimeter()))
+                    > (((*getElement(shapeList, j + 1)) -> area()) / ((*getElement(shapeList, j + 1)) -> perimeter()))){
+                Shape* temp = *getElement(shapeList, j);
+                *getElement(shapeList, j) = *getElement(shapeList, j + 1);
+                *getElement(shapeList, j + 1) = temp;
+            }
         }
-    }
-    for(int i = 0; i < ifCount; i++){
-        (*shapeList).pop_front();
+
     }
 }

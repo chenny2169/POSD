@@ -22,6 +22,7 @@ TEST (Sort, sortByIncreasingPerimeter) {
 	Sort::sortByIncreasingPerimeter(shapeList);
 
     for(std::list<Shape*>::iterator it = (*shapeList).begin(); it != (*shapeList).end(); it++){
+        std::cout<<"compactness:"<<(*it) -> perimeter()<<std::endl;
         ASSERT_NEAR(perimeterExpected[assertCount], (*it) -> perimeter(), 0.00001);
         assertCount++;
     }
