@@ -25,6 +25,7 @@ bool Atom::match(Variable* var){
   if((*var)._count == 0){
     (*var)._value = _symbol;
     (*var)._count++;
+    return true;
   }
   else if (_symbol == (*var)._value){
     return true;
