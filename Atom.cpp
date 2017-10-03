@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Atom.h"
-#include "Number.h"
-#include "Variable.h"
+#include "atom.h"
+#include "number.h"
+#include "variable.h"
 
 bool Atom::match(Atom a){
   if (_symbol == a._symbol){
@@ -12,8 +12,8 @@ bool Atom::match(Atom a){
   }
 }
 
-bool Atom::match(Number* num){
-  if (_symbol == (*num).value()){
+bool Atom::match(Number &num){
+  if (_symbol == num.value()){
     return true;
   }
   else{
@@ -21,13 +21,13 @@ bool Atom::match(Number* num){
   }
 }
 
-bool Atom::match(Variable* var){
-  if((*var)._count == 0){
-    (*var)._value = _symbol;
-    (*var)._count++;
+bool Atom::match(Variable &var){
+  if(var._count == 0){
+    var._value = _symbol;
+    var._count++;
     return true;
   }
-  else if (_symbol == (*var)._value){
+  else if (_symbol == var._value){
     return true;
   }
   else{

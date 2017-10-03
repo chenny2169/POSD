@@ -10,8 +10,8 @@ public:
   Atom (std::string s):_symbol(s) {}
   std::string _symbol;
   bool match(Atom a);
-  bool match(Number* num);
-  bool match(Variable* var);
+  bool match(Number &num);
+  bool match(Variable &var);
 };
 
 #endif

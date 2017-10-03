@@ -11,8 +11,8 @@ public:
   std::string const _symbol;
   std::string _value;
   int _count = 0;
-  bool match( Atom* atom );
-  bool match( Number* num );
+  bool match( Atom &atom );
+  bool match( Number &num );
 };
 
 #endif
