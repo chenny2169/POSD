@@ -11,6 +11,7 @@ public:
   std::string const _symbol;
   std::string _value;
   int _count = 0;
+  std::string value();
   bool match( Atom &atom );
   bool match( Number &num );
 };

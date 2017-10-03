@@ -3,6 +3,10 @@
 #include "number.h"
 #include "atom.h"
 
+std::string Variable::value(){
+    return _value;
+}
+
 bool Variable::match( Atom &atom ){
   if(_count == 0){
     _value = atom._symbol ;
