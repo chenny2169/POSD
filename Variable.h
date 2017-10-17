@@ -16,11 +16,15 @@ public:
   bool * _bothValuesAreEmpty = new bool(false);
   bool * _matchVarStruct = new bool(false);
   std::vector<Variable*> matchVector = {};
+  Struct * s;
   std::string symbol() const{
     return _symbol;
   }
-  std::string value() {
-    return *_value;
+  std::string value() const{
+    if (*_matchVarStruct)
+      return s -> value();
+    else
+      return *_value;
   }
   bool match (Variable & var){
     if (_count == 0 && var._count == 0){
@@ -96,10 +100,9 @@ public:
   }
   bool match(Struct & str){
     if(_count == 0){
-      std::string strValue = str.value();
-      // *_matchVarStruct = true;
-      // *(str._matchVarStruct) = true;
-      _value = &(str._value);
+      s = &str;
+      *_matchVarStruct = true;
+      *_value = str.value();
       _count++;
       return true;
     }

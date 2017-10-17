@@ -11,7 +11,6 @@ class Struct:public Term
 public:
   Struct(Atom const & name, std::vector<Term *> args):_name(name), _args(args) {
   }
-  std::string _value;
 
   Term * args(int index) {
     return _args[index];
@@ -30,13 +29,13 @@ public:
     return ret;
   }
 
-  std::string value() {
-    _value =_name.value() + "(";
+  std::string value() const{
+    std::string ret =_name.value() + "(";
     for(int i = 0; i < _args.size() - 1 ; i++){
-      _value += _args[i] -> value() + ", ";
+      ret += _args[i] -> value() + ", ";
     }
-    _value += _args[_args.size()-1] -> value() + ")";
-    return _value;
+    ret += _args[_args.size()-1] -> value() + ")";
+    return ret;
   }
 
   bool match(Term &term){

@@ -9,7 +9,7 @@ class Number : public Term{
     std::string symbol() const{
       return _symbol;
     }
-    std::string value() {
+    std::string value() const{
       int count = 0;
       std::string ret;
       for (int i = 0; i < _value.size(); i++){
