@@ -99,7 +99,7 @@ public:
       std::string strValue = str.value();
       // *_matchVarStruct = true;
       // *(str._matchVarStruct) = true;
-      _value = str._value;
+      _value = &(str._value);
       _count++;
       return true;
     }
