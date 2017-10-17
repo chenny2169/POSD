@@ -14,11 +14,12 @@ public:
   std::string * _value;
   int _count = 0;
   bool * _bothValuesAreEmpty = new bool(false);
+  bool * _matchVarStruct = new bool(false);
   std::vector<Variable*> matchVector = {};
   std::string symbol() const{
     return _symbol;
   }
-  std::string value() const{
+  std::string value() {
     return *_value;
   }
   bool match (Variable & var){
@@ -26,13 +27,26 @@ public:
       if (*_bothValuesAreEmpty && !(*(var._bothValuesAreEmpty))){
         var._value = _value;
         *(var._bothValuesAreEmpty) = true;
+        var.matchVector.push_back(this);
+        matchVector.push_back(&var);
       }
       else if (*(var._bothValuesAreEmpty) && !(*_bothValuesAreEmpty)){
         _value = var._value;
         *(_bothValuesAreEmpty) = true;
+        matchVector.push_back(&var);
+        var.matchVector.push_back(this);
+      }
+      else if (*_bothValuesAreEmpty && *(var._bothValuesAreEmpty)){
+        _value = var._value;
+        matchVector[0] -> _value = var.matchVector[0] -> _value;
+        std::cout << "var.matchVector:" << var.value() << '\n';
+        matchVector.push_back(&var);
+        var.matchVector.push_back(this);
       }
       else{
         _value = var._value;
+        matchVector.push_back(&var);
+        var.matchVector.push_back(this);
         *(_bothValuesAreEmpty) = true;
         *(var._bothValuesAreEmpty) = true;
       }
@@ -82,7 +96,10 @@ public:
   }
   bool match(Struct & str){
     if(_count == 0){
-      *_value = str.value();
+      std::string strValue = str.value();
+      // *_matchVarStruct = true;
+      // *(str._matchVarStruct) = true;
+      _value = str._value;
       _count++;
       return true;
     }

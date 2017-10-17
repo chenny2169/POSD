@@ -5,7 +5,7 @@ class Term{
 public:
   virtual std::string symbol() const = 0;
 
-  virtual std::string value() const{
+  virtual std::string value() {
     return symbol();
   }
 
