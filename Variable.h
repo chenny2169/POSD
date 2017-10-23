@@ -134,9 +134,6 @@ public:
           if (pl -> getElements()[i] == this && pl -> getElements()[i] -> symbol() == _symbol)
             return false;
         }
-
-        // s = &str;
-        // *_matchVarStruct = true;
         l = pl;
         *_matchVarList = true;
         *_value = pl -> value();

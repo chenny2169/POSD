@@ -28,31 +28,13 @@ public:
       ret += "]";
     else {
       for(int i = 0; i < _elements.size() - 1; i++){
-        if (_elements[i] -> value() == "")
-          ret += _elements[i] -> symbol() + ", ";
-        else
           ret += _elements[i] -> value() + ", ";
       }
-      if (_elements[_elements.size()-1] -> value() == "")
-        ret += _elements[_elements.size()-1] -> symbol() + "]";
-      else
         ret += _elements[_elements.size()-1] -> value() + "]";
       return ret;
     }
   }
-  bool match(Term & term){
-    List * pl = dynamic_cast<List *>(&term);
-    if (pl){
-      if (_elements.size() != pl -> _elements.size())
-        return false;
-      for (int i = 0; i < _elements.size(); i++){
-        _elements[i] -> match(*(pl -> _elements[i]));
-      }
-      return true;
-    }
-    else
-      return false;
-  }
+  bool match(Term & term);
 
   Term * head() const{
       Term * ret = NULL;

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <typeinfo>
 #include "term.h"
 #include "variable.h"
 #include "struct.h"

@@ -242,7 +242,4 @@ TEST (List, emptyExecptionOfTail) {
   }catch(...){}
 }
 
-
-
-
 #endif
