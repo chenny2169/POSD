@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+#include <typeinfo>
 #include "term.h"
 #include "variable.h"
+#include "struct.h"
 
 bool Term::match(Term & term){
   Variable * pv = dynamic_cast<Variable *>(&term);
@@ -18,6 +20,7 @@ bool Term::match(Term & term){
       return false;
     }
   }
-  else
+  else{
     return value() == term.value();
+  }
 }

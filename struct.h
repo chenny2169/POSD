@@ -22,19 +22,33 @@ public:
 
   std::string symbol() const{
     std::string ret =_name.symbol() + "(";
-    for(int i = 0; i < _args.size() - 1 ; i++){
-      ret += _args[i]-> symbol() + ", ";
+    if (_args.size() == 0)
+      ret += ")";
+    else{
+      for(int i = 0; i < _args.size() - 1 ; i++){
+        ret += _args[i]-> symbol() + ", ";
+      }
+      ret += _args[_args.size()-1]-> symbol() + ")";
     }
-    ret += _args[_args.size()-1]-> symbol() + ")";
     return ret;
   }
 
   std::string value() const{
     std::string ret =_name.value() + "(";
-    for(int i = 0; i < _args.size() - 1 ; i++){
-      ret += _args[i] -> value() + ", ";
+    if (_args.size() == 0)
+      ret += ")";
+    else{
+      for(int i = 0; i < _args.size() - 1 ; i++){
+        if (_args[i] -> value() == "")
+          ret += _args[i] -> symbol() + ", ";
+        else
+          ret += _args[i] -> value() + ", ";
+      }
+      if (_args[_args.size()-1] -> value() == "")
+        ret += _args[_args.size()-1] -> symbol() + ")";
+      else
+        ret += _args[_args.size()-1] -> value() + ")";
     }
-    ret += _args[_args.size()-1] -> value() + ")";
     return ret;
   }
 
@@ -43,11 +57,11 @@ public:
     if (ps){
       if (!_name.match(ps -> _name))
         return false;
-      if(_args.size()!= ps -> _args.size())
+      if(_args.size() != ps -> _args.size())
         return false;
-      for(int i=0;i<_args.size();i++){
-        if(_args[i]->symbol() != ps -> _args[i] -> symbol())
-            return false;
+      for(int i = 0; i < _args.size(); i++){
+        if(_args[i] -> symbol() != ps -> _args[i] -> symbol())
+          return false;
       }
       return true;
     }
