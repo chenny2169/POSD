@@ -10,9 +10,9 @@
 
 class Variable : public Term{
 public:
-  Variable(std::string s):_symbol(s){}
+  Variable(std::string s):_symbol(s), _value(new std::string(s)){}
   std::string const _symbol;
-  std::string * _value = new std::string();
+  std::string * _value;
   int _count = 0;
   bool * _bothValuesAreEmpty = new bool(false);
   bool * _matchVarStruct = new bool(false);
@@ -27,7 +27,7 @@ public:
     if (*_matchVarStruct)
       return s -> value();
     else if (*_matchVarList)
-      return l -> value();  
+      return l -> value();
     else
       return *_value;
   }
