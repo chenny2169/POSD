@@ -228,7 +228,9 @@ TEST (List, emptyExecptionOfHead) {
   try{
     empty.head();
   }
-  catch(...){}
+  catch(std::string e){
+    EXPECT_EQ("Accessing head in an empty list", e);
+  }
 }
 
 // Given there is a empty list
@@ -239,7 +241,9 @@ TEST (List, emptyExecptionOfTail) {
   List empty(args);
   try{
     empty.tail();
-  }catch(...){}
+  }catch(std::string e){
+    EXPECT_EQ("Accessing tail in an empty list", e);
+  }
 }
 
 #endif
