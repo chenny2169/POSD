@@ -2,8 +2,9 @@
 #define LIST_H
 
 #include "term.h"
-
+#include "variable.h"
 #include <vector>
+
 using std::vector;
 
 class List : public Term {
@@ -40,9 +41,10 @@ public:
   }
   bool match(Term & term){
       List * pl = dynamic_cast<List *>(&term);
+      Variable * pv = dynamic_cast<Variable *>(&term);
       if (pl){
         std::vector<Term *> pl_temp = pl -> getElements();
-        if (_elements.size() != pl -> getElements().size())
+        if (_elements.size() != pl_temp.size())
           return false;
         for (int i = 0; i < _elements.size(); i++){
           if (!(_elements[i] -> match(*pl_temp[i]))){
@@ -51,8 +53,11 @@ public:
         }
         return true;
       }
+      else if (pv){
+        return pv -> match(*this);
+      }
       else{
-        return false;
+        return symbol() == term.symbol();
       }
   }
 

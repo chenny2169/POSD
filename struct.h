@@ -2,6 +2,7 @@
 #define STRUCT_H
 
 #include "atom.h"
+#include "variable.h"
 #include <vector>
 #include <string>
 
@@ -46,6 +47,7 @@ public:
   }
   bool match(Term &term){
     Struct * ps = dynamic_cast<Struct *>(&term);
+    Variable * pv = dynamic_cast<Variable *>(&term);
     if (ps){
       std::vector<Term *> ps_temp = ps -> getArgs();
       if (!_name.match(ps -> _name))
@@ -58,8 +60,10 @@ public:
       }
       return true;
     }
+    else if (pv)
+      return pv -> match(*this);
     else
-      return false;
+      return symbol() == term.symbol();
   }
   std::vector<Term *> getArgs(){
     return _args;
