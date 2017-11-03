@@ -12,8 +12,10 @@ public:
   List (vector<Term *> const & elements):_elements(elements){}
   std::string symbol() const{
     std::string ret = "[";
-    if (_elements.size() == 0)
+    if (_elements.size() == 0){
       ret += "]";
+      return ret;
+    }
     else {
       for(int i = 0; i < _elements.size() - 1 ; i++){
         ret += _elements[i] -> symbol() + ", ";
@@ -24,8 +26,10 @@ public:
   }
   std::string value() const{
     std::string ret = "[";
-    if (_elements.size() == 0)
+    if (_elements.size() == 0){
       ret += "]";
+      return ret;
+    }
     else {
       for(int i = 0; i < _elements.size() - 1; i++){
           ret += _elements[i] -> value() + ", ";
@@ -34,7 +38,23 @@ public:
       return ret;
     }
   }
-  bool match(Term & term);
+  bool match(Term & term){
+      List * pl = dynamic_cast<List *>(&term);
+      if (pl){
+        std::vector<Term *> pl_temp = pl -> getElements();
+        if (_elements.size() != pl -> getElements().size())
+          return false;
+        for (int i = 0; i < _elements.size(); i++){
+          if (!(_elements[i] -> match(*pl_temp[i]))){
+              return false;
+          }
+        }
+        return true;
+      }
+      else{
+        return false;
+      }
+  }
 
   Term * head() const{
       Term * ret = NULL;

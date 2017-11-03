@@ -1,16 +1,24 @@
 #ifndef TERM_H
 #define TERM_H
 
+#include <string>
+#include <sstream>
+using std::string;
+
 class Term{
 public:
-  virtual std::string symbol() const = 0;
-
-  virtual std::string value() const{
-    return symbol();
+  virtual string symbol() const {return _symbol;}
+  virtual string value() const {return symbol();}
+  virtual bool match(Term & a);
+protected:
+  Term ():_symbol(""){}
+  Term (string s):_symbol(s) {}
+  Term(double db){
+    std::ostringstream strs;
+    strs << db;
+    _symbol = strs.str();
   }
-
-  virtual bool match(Term & term);
+  string _symbol;
 };
-
 
 #endif

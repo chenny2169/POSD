@@ -2,59 +2,58 @@
 #define STRUCT_H
 
 #include "atom.h"
-#include "term.h"
 #include <vector>
 #include <string>
 
-class Struct:public Term
-{
+using std::string;
+
+class Struct: public Term {
 public:
-  Struct(Atom const & name, std::vector<Term *> args):_name(name), _args(args) {
+  Struct(Atom name, std::vector<Term *> args): _name(name) {
+    _args = args;
+  }
+
+  int arity(){
+    return _args.size();
   }
 
   Term * args(int index) {
     return _args[index];
   }
 
-  Atom const & name() {
+  Atom & name() {
     return _name;
   }
-
-  std::string symbol() const{
-    std::string ret =_name.symbol() + "(";
-    if (_args.size() == 0)
+  string symbol() const {
+    string ret = _name.symbol() + "(";
+    std::vector<Term *>::const_iterator it = _args.begin();
+    if (_args.size() == 0){
       ret += ")";
-    else{
-      for(int i = 0; i < _args.size() - 1 ; i++){
-        ret += _args[i]-> symbol() + ", ";
-      }
-      ret += _args[_args.size()-1]-> symbol() + ")";
+      return ret;
     }
+    for (; it != _args.end()-1; ++it)
+      ret += (*it)->symbol()+", ";
+    ret  += (*it)->symbol()+")";
     return ret;
   }
-
-  std::string value() const{
-    std::string ret =_name.value() + "(";
-    if (_args.size() == 0)
-      ret += ")";
-    else{
-      for(int i = 0; i < _args.size() - 1 ; i++){
-        ret += _args[i] -> value() + ", ";
-      }
-        ret += _args[_args.size()-1] -> value() + ")";
-    }
+  string value() const {
+    string ret = _name.symbol() + "(";
+    std::vector<Term *>::const_iterator it = _args.begin();
+    for (; it != _args.end()-1; ++it)
+      ret += (*it)->value()+", ";
+    ret  += (*it)->value()+")";
     return ret;
   }
-
   bool match(Term &term){
     Struct * ps = dynamic_cast<Struct *>(&term);
     if (ps){
+      std::vector<Term *> ps_temp = ps -> getArgs();
       if (!_name.match(ps -> _name))
         return false;
       if(_args.size() != ps -> _args.size())
         return false;
       for(int i = 0; i < _args.size(); i++){
-        if(_args[i] -> symbol() != ps -> _args[i] -> symbol())
+        if (!(_args[i] -> match(*ps_temp[i])))
           return false;
       }
       return true;
@@ -62,6 +61,10 @@ public:
     else
       return false;
   }
+  std::vector<Term *> getArgs(){
+    return _args;
+  }
+private:
   Atom _name;
   std::vector<Term *> _args;
 };

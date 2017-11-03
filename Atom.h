@@ -2,17 +2,13 @@
 #define ATOM_H
 
 #include <string>
+#include <sstream>
 #include "term.h"
-
+using std::string;
 
 class Atom : public Term{
 public:
-  Atom (std::string s):_symbol(s) {}
-  std::string _symbol;
-  std::string symbol() const{
-    return _symbol;
-  }
+  Atom(string s):Term(s) {}
 };
-
 
 #endif

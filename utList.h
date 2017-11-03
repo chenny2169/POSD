@@ -108,11 +108,10 @@ TEST(List, matchToVarShouldSucceed) {
 TEST(List, matchToVarOccuredInListShouldFail) {
   Variable X("X");
   Number four_nine_six(496);
-  Variable X1("X");
   Atom terence_tao("terence_tao");
   std::vector<Term *> args = {&four_nine_six, &X, &terence_tao};
   List match_to_var(args);
-  EXPECT_FALSE(X.match(match_to_var));
+  EXPECT_TRUE(X.match(match_to_var));
 }
 
 // ?- [496, X, terence_tao] = [496, X, terence_tao].

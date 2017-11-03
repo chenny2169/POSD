@@ -1,25 +1,12 @@
-#include <iostream>
-#include <string>
 #include "term.h"
 #include "variable.h"
-#include "struct.h"
+#include <iostream>
+#include <typeinfo>
 
-bool Term::match(Term & term){
-  Variable * pv = dynamic_cast<Variable *>(&term);
-  if (pv){
-    if (pv -> _count == 0){
-      *(pv -> _value) = value();
-      pv -> _count++;
-      return true;
-    }
-    else if (value() == *(pv -> _value)){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
+bool Term::match(Term & a){
+  if (typeid(a) ==  typeid(Variable))
+    return a.match(*this);
   else{
-    return value() == term.value();
+    return symbol() == a.symbol();
   }
 }
