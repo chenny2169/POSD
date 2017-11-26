@@ -7,7 +7,7 @@ else
 		g++ -o hw6 mainTerm.o term.o -lgtest -lpthread
 endif
 
-mainTerm.o: mainTerm.cpp utAtom.h utStruct.h utVariable.h utList.h utScanner.h utParser.h
+mainTerm.o: mainTerm.cpp utParser.h
 	g++ -std=gnu++0x -c mainTerm.cpp
 term.o: term.cpp term.h variable.h
 	g++ -std=gnu++0x -c term.cpp
