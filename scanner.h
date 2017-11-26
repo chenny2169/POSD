@@ -93,8 +93,13 @@ private:
     if (symbolExist(s,val)) {
         _tokenValue = val;
     } else {
-      symtable.push_back(pair<string, int>(s,TokenType));
-       _tokenValue = symtable.size()-1; // index to symtable
+          if ((buffer[buffer.size() - 1] == '.') && buffer.size() != 1){
+            if (buffer[buffer.size() - 2] != '.'){
+              buffer.pop_back();
+            }
+          }
+          symtable.push_back(pair<string, int>(s,TokenType));
+          _tokenValue = symtable.size()-1; // index to symtable
     }
   }
 };

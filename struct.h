@@ -68,9 +68,9 @@ public:
   std::vector<Term *> getArgs(){
     return _args;
   }
+  std::vector<Term *> _args;
 private:
   Atom _name;
-  std::vector<Term *> _args;
 };
 
 #endif
