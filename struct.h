@@ -25,6 +25,7 @@ public:
   Atom & name() {
     return _name;
   }
+
   string symbol() const {
     string ret = _name.symbol() + "(";
     std::vector<Term *>::const_iterator it = _args.begin();
@@ -37,6 +38,7 @@ public:
     ret  += (*it)->symbol()+")";
     return ret;
   }
+
   string value() const {
     string ret = _name.symbol() + "(";
     std::vector<Term *>::const_iterator it = _args.begin();
@@ -45,6 +47,7 @@ public:
     ret  += (*it)->value()+")";
     return ret;
   }
+  
   bool match(Term &term){
     Struct * ps = dynamic_cast<Struct *>(&term);
     Variable * pv = dynamic_cast<Variable *>(&term);
