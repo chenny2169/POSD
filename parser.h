@@ -99,7 +99,7 @@ public:
       else if (_nodeTreeOperator[i] -> payload == COMMA){
         commaCount++;
         if (commaCount == 1){
-          if (_root -> payload != SEMICOLON){
+          if (semicolonCount == 0){
             _root = _nodeTreeOperator[i];
           }
           _nodeTreeOperator[i] -> left = _nodeTreeOperator[i - 1];
@@ -224,7 +224,7 @@ private:
     }
   }
 
-  Node * _root;
+  Node * _root = nullptr;
   vector<Term *> _terms;
   vector<Node *> _nodeTerms;
   vector<int> _treeOperator;
