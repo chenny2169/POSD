@@ -101,16 +101,19 @@ public:
   }
 
   void next() {
-    _list.pop_front();
-    if (!_makeIterator -> isDone()){
-      _nowIterator = _makeIterator -> currentItem() -> createIterator();
+    if (!(_list.front() -> createIterator() -> isDone())){
+      _nowIterator = _list.front() -> createIterator();
       _nowIterator -> first();
       while(!(_nowIterator -> isDone())){
         _list.push_back(_nowIterator -> currentItem());
         _nowIterator -> next();
       }
+      _list.pop_front();
+    }
+    else{
+      _list.pop_front();
       _makeIterator -> next();
-      if (!_makeIterator -> isDone()){
+      if (!(_makeIterator -> isDone())){
         _list.push_back(_makeIterator -> currentItem());
       }
     }

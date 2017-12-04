@@ -287,4 +287,35 @@ TEST(iterator, listtBFSIterator2){
   EXPECT_TRUE(itList -> isDone());
 }
 
+TEST(iterator, listtDFSIterator3){
+  Number one(1);
+  Atom tom("tom");
+  Variable X("X");
+  Variable Y("Y");
+  Number two(2);
+  List list1({&tom, &Y});
+  List list2({ &X, &list1 });
+  List list3({ &one, &list2});
+  List list4({ &one, &list3});
+  Iterator<Term *> * itList = list4.createDFSIterator();
+  itList -> first();
+  EXPECT_EQ("1", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("[1, [X, [tom, Y]]]", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("1", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("[X, [tom, Y]]", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("X", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("[tom, Y]", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("tom", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("Y", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_TRUE(itList -> isDone());
+}
+
 #endif
