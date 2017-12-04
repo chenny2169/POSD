@@ -1,7 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "term.h"
 #include "variable.h"
 #include <vector>
 
@@ -86,6 +85,18 @@ public:
   vector<Term *> getElements(){
     return _elements;
   }
+
+  Term * args(int index) {
+    return _elements[index];
+  }
+
+  int arity() const {
+    return _elements.size();
+  }
+
+  Iterator<Term *> * createIterator();
+  Iterator<Term *> * createDFSIterator();
+  Iterator<Term *> * createBFSIterator();
 
 private:
   vector<Term *> _elements;

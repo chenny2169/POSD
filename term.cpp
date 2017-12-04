@@ -1,5 +1,6 @@
 #include "term.h"
 #include "variable.h"
+#include "iterator.h"
 #include <iostream>
 #include <typeinfo>
 
@@ -9,4 +10,8 @@ bool Term::match(Term & a){
   else{
     return symbol() == a.symbol();
   }
+}
+
+Iterator<Term *> * Term::createIterator(){
+  return new NullIterator<Term *>(this);
 }

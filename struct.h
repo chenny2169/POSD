@@ -47,7 +47,7 @@ public:
     ret  += (*it)->value()+")";
     return ret;
   }
-  
+
   bool match(Term &term){
     Struct * ps = dynamic_cast<Struct *>(&term);
     Variable * pv = dynamic_cast<Variable *>(&term);
@@ -71,6 +71,9 @@ public:
   std::vector<Term *> getArgs(){
     return _args;
   }
+  Iterator<Term *> * createIterator();
+  Iterator<Term *> * createDFSIterator();
+  Iterator<Term *> * createBFSIterator();
   std::vector<Term *> _args;
 private:
   Atom _name;
