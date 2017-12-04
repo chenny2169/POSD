@@ -87,45 +87,37 @@ public:
   friend class Struct;
   friend class List;
   void first() {
-    _makeIterator = _t -> createIterator();
-    _makeIterator -> first();
-    _list.push_back(_makeIterator -> currentItem());
+    parses(_t -> createIterator());
   }
 
   Term* currentItem() const {
-    return _list.front();
+    return _elements[_index];
   }
 
   bool isDone() const {
-    return _list.size() == 0;
+    return _index >= _elements.size();
   }
 
   void next() {
-    if (!(_list.front() -> createIterator() -> isDone())){
-      _nowIterator = _list.front() -> createIterator();
-      _nowIterator -> first();
-      while(!(_nowIterator -> isDone())){
-        _list.push_back(_nowIterator -> currentItem());
-        _nowIterator -> next();
+    _index++;
+  }
+
+  void parses(Iterator<Term*> * t){
+    while (!(t -> isDone())){
+      _elements.push_back(t -> currentItem());
+      if (!(t -> currentItem() -> createIterator() -> isDone())){
+        Iterator<Term *> * _nowIterator =  t -> currentItem() -> createIterator();
+        parses(_nowIterator);
       }
-      _list.pop_front();
-    }
-    else{
-      _list.pop_front();
-      _makeIterator -> next();
-      if (!(_makeIterator -> isDone())){
-        _list.push_back(_makeIterator -> currentItem());
-      }
+      t -> next();
     }
   }
 
 private:
   DFSIterator(T t): _index(0), _t(t) {}
-  int _index;
+  int _index = 0;
   T _t;
-  std::list<Term *> _list;
-  Iterator<Term *> * _makeIterator = nullptr;
-  Iterator<Term *> * _nowIterator = nullptr;
+  std::vector<Term *> _elements;
 };
 
 template<class T>

@@ -318,4 +318,63 @@ TEST(iterator, listtDFSIterator3){
   EXPECT_TRUE(itList -> isDone());
 }
 
+TEST(iterator, structlisttDFSIterator){
+  Number one(1);
+  Atom bun("bun");
+  Atom beefPatty("beefPatty");
+  Atom shreddedLettuce("shreddedLettuce");
+  Atom sauce("sauce");
+  Atom cheese("cheese");
+  Atom pickleSlice1("pickleSlice1");
+  Atom pickleSlice2("pickleSlice2");
+  Atom onion1("onion1");
+  Atom onion2("onion2");
+  Atom fries1("fries1");
+  Atom fries2("fries2");
+  Atom coke("coke");
+  List list1({&pickleSlice1, &pickleSlice2});
+  List list2({ &onion1, &onion2 });
+  Struct bigMac(Atom("bigMac"), {&bun, &beefPatty, &shreddedLettuce, &sauce, &cheese, &list1, &list2});
+
+
+  List list3({ &fries1, &fries2});
+  Struct combo1(Atom("combo1"), {&bigMac, &coke, &list3});
+
+  Iterator<Term *> * itList = combo1.createDFSIterator();
+  itList -> first();
+  EXPECT_EQ("bigMac(bun, beefPatty, shreddedLettuce, sauce, cheese, [pickleSlice1, pickleSlice2], [onion1, onion2])", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("bun", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("beefPatty", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("shreddedLettuce", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("sauce", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("cheese", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("[pickleSlice1, pickleSlice2]", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("pickleSlice1", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("pickleSlice2", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("[onion1, onion2]", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("onion1", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("onion2", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("coke", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("[fries1, fries2]", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("fries1", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_EQ("fries2", itList -> currentItem() -> symbol());
+  itList -> next();
+  EXPECT_TRUE(itList -> isDone());
+}
+
 #endif
