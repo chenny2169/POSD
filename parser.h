@@ -23,12 +23,10 @@ public:
     int token = _scanner.nextToken();
     _currentToken = token;
     if(token == VAR){
-      std::cout << "/* message var*/" << '\n';
       return new Variable(symtable[_scanner.tokenValue()].first);
     }else if(token == NUMBER){
       return new Number(_scanner.tokenValue());
     }else if(token == ATOM || token == ATOMSC){
-      std::cout << "/* messageA */" << '\n';
       Atom* atom = new Atom(symtable[_scanner.tokenValue()].first);
       if(_scanner.currentChar() == '(' ) {
         return structure();
@@ -194,12 +192,10 @@ public:
   }
 
   void generateResult(bool evaluate){
-    std::cout << "/* message in gen*/" << evaluate << '\n';
     if (!evaluate){
       _result = "false.";
     }
     else{
-      std::cout << "/* message in else*/" << '\n';
       string leftOperand = _root -> left -> term -> symbol();
       string rightOperand = _root -> right -> term -> symbol();
       if (leftOperand == rightOperand){
