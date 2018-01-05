@@ -20,7 +20,7 @@ public:
       else if (isdigit(currentChar())) {
         _tokenValue = extractNumber();
         return NUMBER;
-      }  else if (islower(currentChar())) {
+      }  else if (islower(currentChar()) || currentChar() == '_') {
         string s = extractAtom();
         processToken<ATOM>(s);
         return ATOM;
@@ -60,7 +60,7 @@ public:
 
   string extractAtom() {
     int posBegin = position();
-    for (;isalnum(buffer[pos]); ++pos);
+    for (;isalnum(buffer[pos]) || buffer[pos] == '_'; ++pos);
     return buffer.substr(posBegin, pos-posBegin);
   }
 
@@ -80,10 +80,15 @@ public:
     return buffer[pos++];
   }
 
+  bool getIsDeletePeriod(){
+    return isDeletePeriod;
+  }
+
 private:
   string buffer;
   int pos;
   int _tokenValue;
+  bool isDeletePeriod = false;
 
 private:
   // case-based populating symtable and setting _tokenValue
@@ -93,11 +98,6 @@ private:
     if (symbolExist(s,val)) {
         _tokenValue = val;
     } else {
-          if ((buffer[buffer.size() - 1] == '.') && buffer.size() != 1){
-            if (buffer[buffer.size() - 2] != '.'){
-              buffer.pop_back();
-            }
-          }
           symtable.push_back(pair<string, int>(s,TokenType));
           _tokenValue = symtable.size()-1; // index to symtable
     }

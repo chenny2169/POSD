@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 #include <string>
-#include <typeinfo>
+
 using std::string;
 
 #include "atom.h"
@@ -13,7 +13,7 @@ using std::string;
 #include "list.h"
 #include "node.h"
 
-#include "utParser.h"
+// #include "utParser.h"
 
 class Parser{
 public:
@@ -23,10 +23,12 @@ public:
     int token = _scanner.nextToken();
     _currentToken = token;
     if(token == VAR){
+      std::cout << "/* message var*/" << '\n';
       return new Variable(symtable[_scanner.tokenValue()].first);
     }else if(token == NUMBER){
       return new Number(_scanner.tokenValue());
     }else if(token == ATOM || token == ATOMSC){
+      std::cout << "/* messageA */" << '\n';
       Atom* atom = new Atom(symtable[_scanner.tokenValue()].first);
       if(_scanner.currentChar() == '(' ) {
         return structure();
@@ -56,22 +58,25 @@ public:
       checkVarInArgs(args);
       return new Struct(structName, args);
     } else {
-      throw string("unexpected token");
+      throw string("Unbalanced operator");
     }
   }
 
   Term * list() {
+    _inList = true;
     int startIndexOfListArgs = _terms.size();
+    _isList = true;
     createTerms();
     if(_currentToken == ']')
     {
+      _inList = false;
       vector<Term *> args(_terms.begin() + startIndexOfListArgs, _terms.end());
       _terms.erase(_terms.begin() + startIndexOfListArgs, _terms.end());
       _nodeTerms.erase(_nodeTerms.begin() + startIndexOfListArgs, _nodeTerms.end());
       checkVarInArgs(args);
       return new List(args);
     } else {
-      throw string("unexpected token");
+      throw string("Unbalanced operator");
     }
   }
 
@@ -91,6 +96,12 @@ public:
     int commaPosition;
     int semicolonCount = 0;
     int semicolonPosition;
+    if (_nodeTerms[_nodeTerms.size() - 1] -> term -> symbol() == "." && _nodeTerms.size() != 1){
+      if (_nodeTerms[_nodeTerms.size() - 2] -> term -> symbol() != "."){
+        _isDeletePeriod = true;
+        _nodeTerms.pop_back();
+      }
+    }
     for (int i = 0; i < _nodeTreeOperator.size(); i++){
       if (_nodeTreeOperator[i] -> payload == EQUALITY){
         _nodeTreeOperator[i] -> left = _nodeTerms[i];
@@ -125,20 +136,25 @@ public:
         }
       }
     }
-    if (commaCount > 0)
+    if (commaCount > 0 && _nodeTreeOperator.size() > commaPosition + 1){
       _nodeTreeOperator[commaPosition] -> right = _nodeTreeOperator[commaPosition + 1];
-    if (semicolonCount > 0)
+    }
+    if (semicolonCount > 0 && _nodeTreeOperator.size() > semicolonPosition + 1){
       if (commaCount == 0){
         _nodeTreeOperator[semicolonPosition] -> right = _nodeTreeOperator[semicolonPosition + 1];
       }
       else{
         _nodeTreeOperator[semicolonPosition] -> right = _nodeTreeOperator[semicolonPosition + 2];
       }
+    }
   }
 
   Node * expressionTree(){
     if (_nodeTreeOperator.size() == 1){
-      return _nodeTreeOperator[0];
+      _root = _nodeTreeOperator[0];
+    }
+    else if (_nodeTreeOperator.size() == 0){
+      _root = _nodeTerms[0];
     }
     return _root;
   }
@@ -159,11 +175,50 @@ public:
     }
   }
 
+  void buildExpression(){
+    matchings();
+    Node * et = expressionTree();
+    std::cout << "/* message */"<<  _isDeletePeriod << '\n';
+    if ((et -> left != 0 && et -> right != 0) && _isDeletePeriod){
+      generateResult(et -> evaluate());
+    }
+    else{
+      if (et -> left == 0 && et -> right == 0)
+        throw string(_nodeTerms[0] -> term -> symbol() + " does never get assignment");
+      else if (!_isDeletePeriod)
+        throw string("Missing token '.'");
+      else if (et -> left == 0 || et -> right == 0){
+        throw string("Unexpected '" + _root -> convertEnumToString(_root -> payload) + "' before '.'");
+      }
+    }
+  }
+
+  void generateResult(bool evaluate){
+    std::cout << "/* message in gen*/" << evaluate << '\n';
+    if (!evaluate){
+      _result = "false.";
+    }
+    else{
+      std::cout << "/* message in else*/" << '\n';
+      string leftOperand = _root -> left -> term -> symbol();
+      string rightOperand = _root -> right -> term -> symbol();
+      if (leftOperand == rightOperand){
+        _result = "true.";
+      }
+      else{
+        _result = leftOperand + " " + _root -> convertEnumToString(_root -> payload) + " " + rightOperand + ".";
+      }
+    }
+  }
+
+  string getResult(){
+    return _result;
+  }
 private:
-  FRIEND_TEST(ParserTest, createArgs);
-  FRIEND_TEST(ParserTest,ListOfTermsEmpty);
-  FRIEND_TEST(ParserTest,listofTermsTwoNumber);
-  FRIEND_TEST(ParserTest, createTerm_nestedStruct3);
+  // FRIEND_TEST(ParserTest, createArgs);
+  // FRIEND_TEST(ParserTest,ListOfTermsEmpty);
+  // FRIEND_TEST(ParserTest,listofTermsTwoNumber);
+  // FRIEND_TEST(ParserTest, createTerm_nestedStruct3);
 
   void createTerms() {
     Term* term = createTerm();
@@ -175,12 +230,15 @@ private:
         _structPosition.push_back(_terms.size() - 1);
         _isStruct = false;
       }
+      if (_isList){
+        _listPosition.push_back(_terms.size() - 1);
+        _isList = false;
+      }
       if (isExist(term, _terms)){
         _nodeTerms[_nodeTerms.size() - 1] = _nodeTerms[_existSymbolPosition];
         _terms[_terms.size() - 1] = _terms[_existSymbolPosition];
       }
       while((_currentToken = _scanner.nextToken()) == ',' || _currentToken == '=' || _currentToken == ';') {
-        _treeOperator.push_back(_currentToken);
         _nodeTreeOperator.push_back(new Node(getEnums(_currentToken)));
         Term * _termInWhile = createTerm();
         _nodeTerms.push_back(new Node(getEnums(_currentToken), _termInWhile, 0, 0));
@@ -190,6 +248,9 @@ private:
             _nodeTerms[_nodeTerms.size() - 1] = _nodeTerms[_existSymbolPosition];
             _terms[_terms.size() - 1] = _terms[_existSymbolPosition];
           }
+        }
+        if (_scanner.currentChar() == '.'){
+          _isDeletePeriod = true;
         }
       }
     }
@@ -206,6 +267,15 @@ private:
           for (int k = 0; k < dynamic_cast<Struct *>(terms[_structPosition[j]]) -> _args.size(); k++){
             if (term -> symbol() == dynamic_cast<Struct *>(terms[_structPosition[j]]) -> _args[k] -> symbol()){
               dynamic_cast<Struct *>(terms[_structPosition[j]]) -> _args[k] = term;
+            }
+          }
+        }
+      }
+      else if (_currentToken == VAR && _listPosition.size() != 0 && !_inList){
+        for (int j = 0; j < _listPosition.size(); j++){
+          for (int k = 0; k < dynamic_cast<List *>(terms[_listPosition[j]]) -> getElements().size(); k++){
+            if (term -> symbol() == dynamic_cast<List *>(terms[_listPosition[j]]) -> getElements()[k] -> symbol()){
+              dynamic_cast<List *>(terms[_listPosition[j]]) -> getElements()[k] = term;
             }
           }
         }
@@ -227,13 +297,17 @@ private:
   Node * _root = nullptr;
   vector<Term *> _terms;
   vector<Node *> _nodeTerms;
-  vector<int> _treeOperator;
   vector<Node *> _nodeTreeOperator;
   Scanner _scanner;
   int _currentToken;
   int _existSymbolPosition;
   bool _inStruct = false;
   bool _isStruct = false;
+  bool _inList = false;
+  bool _isList = false;
   vector<int> _structPosition;
+  vector<int> _listPosition;
+  bool _isDeletePeriod = false;
+  string _result;
 };
 #endif
