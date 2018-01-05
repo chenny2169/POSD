@@ -176,7 +176,6 @@ public:
   void buildExpression(){
     matchings();
     Node * et = expressionTree();
-    std::cout << "/* message */"<<  _isDeletePeriod << '\n';
     if ((et -> left != 0 && et -> right != 0) && _isDeletePeriod){
       generateResult(et -> evaluate());
     }
